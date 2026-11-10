@@ -476,6 +476,12 @@ jobs:
           REALTIME_SOURCE_PRIORITY: ${{ vars.REALTIME_SOURCE_PRIORITY || 'tencent,akshare_sina,efinance,akshare_em' }}
           
         run: |
+          # 临时跳过 Tavily 密钥列表中的首个无效密钥，使用后续备用密钥。
+          if [[ "$TAVILY_API_KEYS" == *,* ]]; then
+            export TAVILY_API_KEYS="${TAVILY_API_KEYS#*,}"
+            echo "Tavily: 使用备用密钥"
+          fi
+
           # 解析自选股配置：
           # 1. Repository/Environment secrets 或 Repository variables（STOCK_LIST_CONFIG）
           # 2. 同名 Environment variables 注入的 runner 环境变量（STOCK_LIST）
